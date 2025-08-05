@@ -12,6 +12,9 @@ public:
     void addAgent(const Agent& agent);
     void printTasks() const;
     void printAgents() const;
+    void prioritizeTasks();
+    void resolveConflicts();
+    void scheduleTasks();
 
 private:
     std::vector<Task> tasks;
