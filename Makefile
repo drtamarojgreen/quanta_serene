@@ -21,6 +21,11 @@ $(EXECUTABLE): $(OBJECTS)
 
 # Clean up build artifacts
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE)
+	rm -f $(OBJECTS) $(EXECUTABLE) test_runner
 
-.PHONY: all clean
+# Target for running tests
+test:
+	$(CXX) $(CXXFLAGS) -o test_runner src/tests.cpp src/Scheduler.cpp
+	./test_runner
+
+.PHONY: all clean test

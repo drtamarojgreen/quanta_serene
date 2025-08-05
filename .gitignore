@@ -1,5 +1,6 @@
 # Executables
 QuantaSerene
+test_runner
 
 # Object files
 *.o
