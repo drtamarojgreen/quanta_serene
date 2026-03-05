@@ -42,15 +42,13 @@ void test_task_prioritization_and_assignment() {
     scheduler.scheduleTasks();
 
     // 3. Assert
-    // This test assumes we can access the private 'tasks' vector of the Scheduler.
-    // The #define private public trick allows this for the test compilation.
-    NATIVE_ASSERT(scheduler.tasks.size() == 2);
+    NATIVE_ASSERT(scheduler.getTasks().size() == 2);
 
     // Check if the tasks were prioritized correctly before assignment.
     // The highest priority task (priority 5) should be first in the internal list after prioritization.
     // and thus assigned first.
-    const Task& firstTask = scheduler.tasks[0];
-    const Task& secondTask = scheduler.tasks[1];
+    const Task& firstTask = scheduler.getTasks()[0];
+    const Task& secondTask = scheduler.getTasks()[1];
 
     NATIVE_ASSERT(firstTask.id == 102); // High priority task should be first
     NATIVE_ASSERT(firstTask.status == IN_PROGRESS);
@@ -81,8 +79,8 @@ void test_conflict_resolution() {
     scheduler.scheduleTasks();
 
     // 3. Assert
-    const Task& dependencyTask = scheduler.tasks[0]; // Task 201
-    const Task& dependentTask = scheduler.tasks[1];  // Task 202
+    const Task& dependencyTask = scheduler.getTasks()[0]; // Task 201
+    const Task& dependentTask = scheduler.getTasks()[1];  // Task 202
 
     // The dependency task should be scheduled.
     NATIVE_ASSERT(dependencyTask.id == 201);
