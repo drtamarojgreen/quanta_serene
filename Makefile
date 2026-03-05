@@ -25,7 +25,13 @@ clean:
 
 # Target for running tests
 test:
-	$(CXX) $(CXXFLAGS) -o test_runner src/tests.cpp src/Scheduler.cpp
+	$(CXX) $(CXXFLAGS) -o test_runner src/tests.cpp src/Scheduler.cpp src/Json.cpp
 	./test_runner
+	$(CXX) $(CXXFLAGS) -o test_json_runner tests/test_json_functionality.cpp src/Scheduler.cpp src/Json.cpp
+	./test_json_runner
+	$(CXX) $(CXXFLAGS) -o test_script_runner tests/test_script_generation.cpp src/Scheduler.cpp src/Json.cpp
+	./test_script_runner
+	$(CXX) $(CXXFLAGS) -o test_bdd_runner tests/test_bdd.cpp src/Scheduler.cpp src/Json.cpp
+	./test_bdd_runner
 
 .PHONY: all clean test

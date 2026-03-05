@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <fstream>
 #include <cstdlib> // For exit()
 
 // Native C++ assertion macro
@@ -32,7 +33,7 @@ struct BDDContext {
 
 void given_a_scheduler_with_agents_and_tasks(BDDContext& context) {
     std::cout << "GIVEN a scheduler with two idle agents and three tasks" << std::endl;
-    context.scheduler = std::make_unique<Scheduler>();
+    context.scheduler.reset(new Scheduler());
 
     // Two idle agents are available
     context.agent1 = Agent(1, "Agent1", IDLE, {});
@@ -53,6 +54,17 @@ void given_a_scheduler_with_agents_and_tasks(BDDContext& context) {
     context.scheduler->addTask(context.conflictedTask);
 }
 
+void given_a_config_file(const std::string& config_file, const std::string& tasks_file) {
+    std::cout << "GIVEN a config file " << config_file << " pointing to " << tasks_file << std::endl;
+    std::ofstream t_file(tasks_file);
+    t_file << R"([{"id": 301, "description": "JSON Task", "priority": 1, "duration": 10, "status": 0, "dependencies": []}])" << std::endl;
+    t_file.close();
+
+    std::ofstream c_file(config_file);
+    c_file << "{\"tasks_file\": \"" << tasks_file << "\"}" << std::endl;
+    c_file.close();
+}
+
 void when_the_scheduler_runs(BDDContext& context) {
     std::cout << "WHEN the scheduling process is run" << std::endl;
     context.scheduler->scheduleTasks();
@@ -60,7 +72,7 @@ void when_the_scheduler_runs(BDDContext& context) {
 
 void then_tasks_are_assigned_correctly_and_conflicts_are_identified(BDDContext& context) {
     std::cout << "THEN the high-priority task is assigned to the first agent" << std::endl;
-    const auto& tasks = context.scheduler->tasks;
+    const auto& tasks = context.scheduler->getTasks();
 
     // Find the high-priority task in the scheduler's list
     bool highPrioTaskFoundAndCorrect = false;
@@ -106,6 +118,28 @@ int main() {
     given_a_scheduler_with_agents_and_tasks(context);
     when_the_scheduler_runs(context);
     then_tasks_are_assigned_correctly_and_conflicts_are_identified(context);
+
+    std::cout << "\n--- BDD SCENARIO PASSED ---" << std::endl;
+
+    std::cout << "\n--- BDD Scenario: Configuration Loading and Reporting ---" << std::endl;
+    Scheduler scheduler;
+    given_a_config_file("test_config.json", "test_tasks_bdd.json");
+    std::cout << "WHEN the scheduler loads the config" << std::endl;
+    scheduler.loadConfig("test_config.json");
+
+    std::cout << "THEN the tasks are loaded from the JSON file" << std::endl;
+    NATIVE_ASSERT(scheduler.getTasks().size() == 1);
+    NATIVE_ASSERT(scheduler.getTasks()[0].id == 301);
+
+    std::cout << "AND a report can be generated" << std::endl;
+    scheduler.generateReport("test_report_bdd.json");
+    std::ifstream report_file("test_report_bdd.json");
+    NATIVE_ASSERT(report_file.is_open());
+    report_file.close();
+
+    std::remove("test_config.json");
+    std::remove("test_tasks_bdd.json");
+    std::remove("test_report_bdd.json");
 
     std::cout << "\n--- BDD SCENARIO PASSED ---" << std::endl;
 

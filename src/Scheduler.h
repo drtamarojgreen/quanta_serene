@@ -46,6 +46,52 @@ public:
      */
     void scheduleTasks();
 
+    /**
+     * @brief Loads tasks from a JSON file.
+     * @param filename The path to the JSON file.
+     */
+    void loadTasks(const std::string& filename);
+
+    /**
+     * @brief Saves tasks to a JSON file.
+     * @param filename The path to the JSON file.
+     */
+    void saveTasks(const std::string& filename) const;
+
+    /**
+     * @brief Loads agents from a JSON file.
+     * @param filename The path to the JSON file.
+     */
+    void loadAgents(const std::string& filename);
+
+    /**
+     * @brief Saves agents to a JSON file.
+     * @param filename The path to the JSON file.
+     */
+    void saveAgents(const std::string& filename) const;
+
+    /**
+     * @brief Loads configuration from a JSON file.
+     * @param filename The path to the JSON file.
+     */
+    void loadConfig(const std::string& filename);
+
+    /**
+     * @brief Generates a status report in JSON format.
+     * @param filename The path to the output JSON file.
+     */
+    void generateReport(const std::string& filename) const;
+
+    /**
+     * @brief Creates a bash script from a JSON payload.
+     * @param payload_json The JSON payload containing the script details.
+     */
+    void createBashScriptFromJson(const std::string& payload_json) const;
+
+    // Getters for testing
+    const std::vector<Task>& getTasks() const { return tasks; }
+    const std::vector<Agent>& getAgents() const { return agents; }
+
 private:
     /**
      * @brief Sorts tasks based on their priority.
